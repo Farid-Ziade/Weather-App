@@ -17,7 +17,10 @@ h1 {
   margin-bottom: 1.5em;
 }
 .container {
-  margin-bottom: 10em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 input {
   padding: 1em;
@@ -33,6 +36,10 @@ input {
   border-radius: 5px;
   background-color: #008882;
   color: white;
+  cursor: pointer;
+}
+.search:hover {
+  background-color: #008881cb;
 }
 .paragraph {
   color: grey;
@@ -41,7 +48,6 @@ input {
   color: red;
 }
 
-/* HTML: <div class="loader"></div>
 .loader {
   width: 50px;
   aspect-ratio: 1;
@@ -51,18 +57,214 @@ input {
     l20-1 0.8s infinite linear alternate,
     l20-2 1.6s infinite linear;
 }
-@keyframes l20-1{
-   0%    {clip-path: polygon(50% 50%,0       0,  50%   0%,  50%    0%, 50%    0%, 50%    0%, 50%    0% )}
-   12.5% {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100%   0%, 100%   0%, 100%   0% )}
-   25%   {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100% 100%, 100% 100%, 100% 100% )}
-   50%   {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100% 100%, 50%  100%, 0%   100% )}
-   62.5% {clip-path: polygon(50% 50%,100%    0, 100%   0%,  100%   0%, 100% 100%, 50%  100%, 0%   100% )}
-   75%   {clip-path: polygon(50% 50%,100% 100%, 100% 100%,  100% 100%, 100% 100%, 50%  100%, 0%   100% )}
-   100%  {clip-path: polygon(50% 50%,50%  100%,  50% 100%,   50% 100%,  50% 100%, 50%  100%, 0%   100% )}
+@keyframes l20-1 {
+  0% {
+    clip-path: polygon(50% 50%, 0 0, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%);
+  }
+  12.5% {
+    clip-path: polygon(
+      50% 50%,
+      0 0,
+      50% 0%,
+      100% 0%,
+      100% 0%,
+      100% 0%,
+      100% 0%
+    );
+  }
+  25% {
+    clip-path: polygon(
+      50% 50%,
+      0 0,
+      50% 0%,
+      100% 0%,
+      100% 100%,
+      100% 100%,
+      100% 100%
+    );
+  }
+  50% {
+    clip-path: polygon(
+      50% 50%,
+      0 0,
+      50% 0%,
+      100% 0%,
+      100% 100%,
+      50% 100%,
+      0% 100%
+    );
+  }
+  62.5% {
+    clip-path: polygon(
+      50% 50%,
+      100% 0,
+      100% 0%,
+      100% 0%,
+      100% 100%,
+      50% 100%,
+      0% 100%
+    );
+  }
+  75% {
+    clip-path: polygon(
+      50% 50%,
+      100% 100%,
+      100% 100%,
+      100% 100%,
+      100% 100%,
+      50% 100%,
+      0% 100%
+    );
+  }
+  100% {
+    clip-path: polygon(
+      50% 50%,
+      50% 100%,
+      50% 100%,
+      50% 100%,
+      50% 100%,
+      50% 100%,
+      0% 100%
+    );
+  }
 }
-@keyframes l20-2{ 
-  0%    {transform:scaleY(1)  rotate(0deg)}
-  49.99%{transform:scaleY(1)  rotate(135deg)}
-  50%   {transform:scaleY(-1) rotate(0deg)}
-  100%  {transform:scaleY(-1) rotate(-135deg)}
-} */
+@keyframes l20-2 {
+  0% {
+    transform: scaleY(1) rotate(0deg);
+  }
+  49.99% {
+    transform: scaleY(1) rotate(135deg);
+  }
+  50% {
+    transform: scaleY(-1) rotate(0deg);
+  }
+  100% {
+    transform: scaleY(-1) rotate(-135deg);
+  }
+}
+
+.cardDiv {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  padding: 2em;
+  background-color: white;
+  border-radius: 5px;
+}
+.today-p {
+  font-size: small;
+}
+.sunny {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: oklch(0.78 0.15 70);
+}
+.weather-container {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+
+.cloud,
+.rain,
+.snow,
+.thunderstorm {
+  position: relative;
+  width: 50px;
+  height: 30px;
+  border-radius: 30px;
+  margin-top: 11px;
+}
+.cloud::before,
+.rain::before,
+.snow::before,
+.thunderstorm::before {
+  content: "";
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  top: -16px;
+  left: 8px;
+}
+
+.cloud {
+  background: #b0bec5;
+}
+.cloud::before {
+  background: #b0bec5;
+}
+
+.rain {
+  background: #90a4ae;
+}
+.rain::before {
+  background: #90a4ae;
+}
+.rain::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 12px;
+  background: #4a90d9;
+  border-radius: 3px;
+  top: 34px;
+  left: 12px;
+  box-shadow:
+    14px 0 0 #4a90d9,
+    28px -4px 0 #4a90d9;
+  animation: rain-fall 0.9s linear infinite;
+}
+@keyframes rain-fall {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+}
+
+.snow {
+  background: #cfd8dc;
+}
+.snow::before {
+  background: #cfd8dc;
+}
+.snow::after {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: #ffffff;
+  border: 1px solid #90a4ae;
+  border-radius: 50%;
+  top: 34px;
+  left: 10px;
+  box-shadow:
+    16px 2px 0 #ffffff,
+    30px -2px 0 #ffffff;
+}
+
+.thunderstorm {
+  background: #78909c;
+}
+.thunderstorm::before {
+  background: #78909c;
+}
+.thunderstorm::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 26px;
+  background: #f5c518;
+  top: 26px;
+  left: 18px;
+  clip-path: polygon(60% 0%, 0% 55%, 45% 55%, 35% 100%, 100% 40%, 55% 40%);
+}
