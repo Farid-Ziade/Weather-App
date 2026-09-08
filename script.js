@@ -51,6 +51,8 @@ async function getCoordinates(place) {
     if (!data.results) {
       p.textContent = "Please type a valid City or check your spelling";
       container.appendChild(p);
+      lat = undefined;
+      long = undefined;
     } else {
       console.log(data.results[0]);
       lat = data.results[0].latitude;
