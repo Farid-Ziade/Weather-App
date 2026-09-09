@@ -151,6 +151,7 @@ input {
   padding: 2em;
   background-color: white;
   border-radius: 5px;
+  border: 1px solid grey;
 }
 .today-p {
   font-size: small;
@@ -267,4 +268,31 @@ input {
   top: 26px;
   left: 18px;
   clip-path: polygon(60% 0%, 0% 55%, 45% 55%, 35% 100%, 100% 40%, 55% 40%);
+}
+
+.extraContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid grey;
+  padding-top: 1em;
+}
+.high,
+.humidity {
+  padding-right: 1em;
+  border-right: 1px solid grey;
+}
+.extraP {
+  font-size: small;
+  color: grey;
+  padding-bottom: 1em;
+}
+.high h4 {
+  display: flex;
+}
+.h4-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3em;
 }

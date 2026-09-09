@@ -38,6 +38,35 @@ let thunderstorm = document.createElement("div");
 thunderstorm.className = "thunderstorm";
 let weatherTempContainer = document.createElement("div");
 weatherTempContainer.className = "weather-container";
+
+let extraContainer = document.createElement("div");
+extraContainer.className = "extraContainer";
+let high = document.createElement("div");
+high.className = "high";
+let highP = document.createElement("p");
+highP.className = "extraP";
+let highH = document.createElement("h4");
+let lowL = document.createElement("h4");
+lowL.className = "lowl";
+let dash = document.createElement("h4");
+dash.textContent = "/";
+let h4Container = document.createElement("div");
+h4Container.className = "h4-container";
+h4Container.appendChild(highH);
+h4Container.appendChild(dash);
+h4Container.appendChild(lowL);
+
+highP.textContent = `High / Low`;
+high.appendChild(highP);
+//////////////////////////////
+let humidity = document.createElement("div");
+humidity.className = "humidity";
+let wind = document.createElement("div");
+wind.className = "wind ";
+extraContainer.appendChild(high);
+extraContainer.appendChild(humidity);
+extraContainer.appendChild(wind);
+
 async function getCoordinates(place) {
   container.appendChild(divLoader);
 
@@ -92,7 +121,6 @@ async function getTemp(lat, long) {
         case 0:
           // sunny
           //bg color
-          console.log(0);
           temp.textContent = `${data.current.temperature_2m}°`;
           weatherTempContainer.appendChild(sunny);
           weatherTempContainer.appendChild(temp);
@@ -103,7 +131,6 @@ async function getTemp(lat, long) {
         case 45:
         case 48:
           //bg color
-          console.log(1);
 
           temp.textContent = `${data.current.temperature_2m}°`;
           weatherTempContainer.appendChild(cloud);
@@ -119,7 +146,6 @@ async function getTemp(lat, long) {
         case 81:
         case 82:
           //bg color
-          console.log("ok");
           temp.textContent = `${data.current.temperature_2m}°`;
           weatherTempContainer.appendChild(rain);
           weatherTempContainer.appendChild(temp);
@@ -135,7 +161,6 @@ async function getTemp(lat, long) {
         case 85:
         case 86:
           //bg color
-          console.log(2);
 
           temp.textContent = `${data.current.temperature_2m}°`;
           weatherTempContainer.appendChild(snow);
@@ -145,7 +170,6 @@ async function getTemp(lat, long) {
         case 96:
         case 99:
           //bg color
-          console.log(3);
 
           temp.textContent = `${data.current.temperature_2m}°`;
           weatherTempContainer.appendChild(thunderstorm);
@@ -154,10 +178,13 @@ async function getTemp(lat, long) {
         default:
           temp.textContent = `${data.current.temperature_2m}°`;
       }
-
+      highH.textContent = `${Math.round(data.daily.temperature_2m_max)}°`;
+      lowL.textContent = ` ${Math.round(data.daily.temperature_2m_min)}°`;
+      high.appendChild(h4Container);
       cardDiv.appendChild(header);
       cardDiv.appendChild(todayParagraph);
       cardDiv.appendChild(weatherTempContainer);
+      cardDiv.appendChild(extraContainer);
       container.appendChild(cardDiv);
     } catch (error) {
       divLoader.remove();
@@ -174,4 +201,14 @@ search.addEventListener("click", async () => {
   await getCoordinates(place);
   await getTemp(lat, long);
   input.value = "";
+});
+input.addEventListener("keypress", async (event) => {
+  if (event.key === "Enter") {
+    cardDiv.remove();
+    p.remove();
+    place = input.value;
+    await getCoordinates(place);
+    await getTemp(lat, long);
+    input.value = "";
+  }
 });
