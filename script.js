@@ -61,8 +61,25 @@ high.appendChild(highP);
 //////////////////////////////
 let humidity = document.createElement("div");
 humidity.className = "humidity";
+let humidityP = document.createElement("p");
+humidityP.className = "extraP";
+humidityP.textContent = "humidity";
+humidity.appendChild(humidityP);
+let dataDiv = document.createElement("div");
+dataDiv.className = "h4-container";
+let dataP = document.createElement("h4");
+dataDiv.appendChild(dataP);
+//////////////////////////////
 let wind = document.createElement("div");
 wind.className = "wind ";
+let windP = document.createElement("p");
+windP.className = "extraP";
+windP.textContent = "wind";
+wind.appendChild(windP);
+let windDiv = document.createElement("div");
+windDiv.className = "h4-container";
+let windh4 = document.createElement("h4");
+windDiv.appendChild(windh4);
 extraContainer.appendChild(high);
 extraContainer.appendChild(humidity);
 extraContainer.appendChild(wind);
@@ -102,7 +119,7 @@ async function getTemp(lat, long) {
   if (lat && long) {
     try {
       let response = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&daily=temperature_2m_max,temperature_2m_min&current=temperature_2m,wind_speed_10m,weather_code&timezone=auto&forecast_days=1`,
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&daily=temperature_2m_max,temperature_2m_min&current=temperature_2m,wind_speed_10m,relative_humidity_2m,weather_code&timezone=auto&forecast_days=1`,
       );
       let data = await response.json();
       console.log(data);
@@ -121,7 +138,7 @@ async function getTemp(lat, long) {
         case 0:
           // sunny
           //bg color
-          temp.textContent = `${data.current.temperature_2m}°`;
+          temp.textContent = `${Math.round(data.current.temperature_2m)}°`;
           weatherTempContainer.appendChild(sunny);
           weatherTempContainer.appendChild(temp);
           break;
@@ -132,7 +149,7 @@ async function getTemp(lat, long) {
         case 48:
           //bg color
 
-          temp.textContent = `${data.current.temperature_2m}°`;
+          temp.textContent = `${Math.round(data.current.temperature_2m)}°`;
           weatherTempContainer.appendChild(cloud);
           weatherTempContainer.appendChild(temp);
           break;
@@ -146,7 +163,7 @@ async function getTemp(lat, long) {
         case 81:
         case 82:
           //bg color
-          temp.textContent = `${data.current.temperature_2m}°`;
+          temp.textContent = `${Math.round(data.current.temperature_2m)}°`;
           weatherTempContainer.appendChild(rain);
           weatherTempContainer.appendChild(temp);
           break;
@@ -162,7 +179,7 @@ async function getTemp(lat, long) {
         case 86:
           //bg color
 
-          temp.textContent = `${data.current.temperature_2m}°`;
+          temp.textContent = `${Math.round(data.current.temperature_2m)}°`;
           weatherTempContainer.appendChild(snow);
           weatherTempContainer.appendChild(temp);
           break;
@@ -171,16 +188,24 @@ async function getTemp(lat, long) {
         case 99:
           //bg color
 
-          temp.textContent = `${data.current.temperature_2m}°`;
+          temp.textContent = `${Math.round(data.current.temperature_2m)}°`;
           weatherTempContainer.appendChild(thunderstorm);
           weatherTempContainer.appendChild(temp);
           break;
         default:
-          temp.textContent = `${data.current.temperature_2m}°`;
+          temp.textContent = `${Math.round(data.current.temperature_2m)}°`;
       }
       highH.textContent = `${Math.round(data.daily.temperature_2m_max)}°`;
       lowL.textContent = ` ${Math.round(data.daily.temperature_2m_min)}°`;
+      dataP.textContent = `${data.current.relative_humidity_2m} ${
+        data.current_units.relative_humidity_2m
+      }`;
+      windh4.textContent = `${data.current.wind_speed_10m} ${
+        data.current_units.wind_speed_10m
+      }`;
       high.appendChild(h4Container);
+      humidity.appendChild(dataDiv);
+      wind.appendChild(windDiv);
       cardDiv.appendChild(header);
       cardDiv.appendChild(todayParagraph);
       cardDiv.appendChild(weatherTempContainer);
@@ -211,4 +236,7 @@ input.addEventListener("keypress", async (event) => {
     await getTemp(lat, long);
     input.value = "";
   }
+});
+window.addEventListener("keydown", () => {
+  input.focus();
 });

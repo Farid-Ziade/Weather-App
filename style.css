@@ -271,16 +271,23 @@ input {
 }
 
 .extraContainer {
+  width: 100%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   border-top: 1px solid grey;
   padding-top: 1em;
+  justify-content: space-between;
+}
+.high,
+.humidity,
+.wind {
+  flex: 1;
+  text-align: left;
+  padding-left: 1em;
 }
 .high,
 .humidity {
-  padding-right: 1em;
-  border-right: 1px solid grey;
+  border-right: 1px solid;
 }
 .extraP {
   font-size: small;
@@ -292,7 +299,10 @@ input {
 }
 .h4-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
   gap: 0.3em;
+  align-items: center;
+}
+.h4-container h4 {
+  font-weight: 500;
 }
