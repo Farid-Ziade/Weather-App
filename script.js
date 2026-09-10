@@ -25,19 +25,6 @@ buttonDiv.appendChild(CButton);
 buttonDiv.appendChild(FButton);
 headerContainer.appendChild(buttonDiv);
 
-FButton.addEventListener("click", async () => {
-  CButton.style.backgroundColor = "white";
-  FButton.style.backgroundColor = "#008882";
-  buttonClicked = `F`;
-  await getTemp(lat, long, buttonClicked);
-});
-CButton.addEventListener("click", async () => {
-  FButton.style.backgroundColor = "white";
-  CButton.style.backgroundColor = "#008882";
-  buttonClicked = `C`;
-  await getTemp(lat, long, buttonClicked);
-});
-
 let search = document.querySelector(".search");
 let input = document.querySelector(".input");
 let container = document.querySelector(".container");
@@ -50,11 +37,6 @@ const formattedDate = date.toLocaleDateString("en-GB", options);
 let todayParagraph = document.createElement("p");
 todayParagraph.className = "today-p";
 
-let place;
-let lat;
-let long;
-let countryName;
-let admin;
 let temp = document.createElement("h3");
 let sunny = document.createElement("div");
 sunny.className = "sunny";
@@ -120,7 +102,9 @@ cardDiv.appendChild(headerContainer);
 cardDiv.appendChild(todayParagraph);
 cardDiv.appendChild(weatherTempContainer);
 cardDiv.appendChild(extraContainer);
-async function getCoordinates(place, buttonClicked) {
+let place;
+
+async function getCoordinates(place) {
   container.appendChild(divLoader);
 
   try {
@@ -136,10 +120,21 @@ async function getCoordinates(place, buttonClicked) {
       lat = undefined;
       long = undefined;
     } else {
+      let lat;
+      let long;
+      let cityName;
+      let countryName;
+      console.log(data.results[0]);
       lat = data.results[0].latitude;
       long = data.results[0].longitude;
-      admin = data.results[0].country;
-      countryName = data.results[0].name;
+      countryName = data.results[0].country;
+      cityName = data.results[0].name;
+      return {
+        lat,
+        long,
+        cityName,
+        countryName,
+      };
     }
   } catch (error) {
     divLoader.remove();
@@ -148,7 +143,7 @@ async function getCoordinates(place, buttonClicked) {
   }
 }
 
-async function getTemp(lat, long, buttonClicked) {
+async function getTemp(lat, long, cityName, countryName, buttonClicked) {
   divLoader.remove();
   paragraph.remove();
   if (lat && long) {
@@ -164,10 +159,10 @@ async function getTemp(lat, long, buttonClicked) {
         );
       }
       let data = await response.json();
-      if (admin) {
-        header.textContent = `${countryName}, ${admin}`;
+      if (countryName) {
+        header.textContent = `${cityName}, ${countryName}`;
       } else {
-        header.textContent = `${countryName}`;
+        header.textContent = `${cityName}`;
       }
       todayParagraph.textContent = formattedDate;
       sunny.remove();
@@ -239,7 +234,7 @@ async function getTemp(lat, long, buttonClicked) {
       container.appendChild(cardDiv);
     } catch (error) {
       divLoader.remove();
-      p.textContent = "failed to load temp, please try again" + error;
+      p.textContent = "failed to load temp, please try again";
       container.appendChild(p);
     }
   }
@@ -248,8 +243,39 @@ async function handleSearch() {
   cardDiv.remove();
   p.remove();
   place = input.value;
-  await getCoordinates(place);
-  await getTemp(lat, long, buttonClicked);
+  let location = await getCoordinates(place);
+  await getTemp(
+    location.lat,
+    location.long,
+    location.cityName,
+    location.countryName,
+    buttonClicked,
+  );
+  FButton.addEventListener("click", async () => {
+    CButton.style.backgroundColor = "white";
+    FButton.style.backgroundColor = "#008882";
+    buttonClicked = `F`;
+    await getTemp(
+      location.lat,
+      location.long,
+      location.cityName,
+      location.countryName,
+      buttonClicked,
+    );
+  });
+  CButton.addEventListener("click", async () => {
+    FButton.style.backgroundColor = "white";
+    CButton.style.backgroundColor = "#008882";
+    buttonClicked = `C`;
+    await getTemp(
+      location.lat,
+      location.long,
+      location.cityName,
+      location.countryName,
+      buttonClicked,
+    );
+  });
+
   input.value = "";
 }
 search.addEventListener("click", () => {
