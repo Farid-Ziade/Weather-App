@@ -124,7 +124,6 @@ async function getCoordinates(place) {
       let long;
       let cityName;
       let countryName;
-      console.log(data.results[0]);
       lat = data.results[0].latitude;
       long = data.results[0].longitude;
       countryName = data.results[0].country;
