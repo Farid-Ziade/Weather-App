@@ -4,10 +4,40 @@ divLoader.className = "loader";
 
 let p = document.createElement("p");
 p.className = "invalid";
+let buttonClicked = `C`;
 
 let cardDiv = document.createElement("div");
 cardDiv.className = "cardDiv";
+let headerContainer = document.createElement("div");
+headerContainer.className = "headerContainer";
 let header = document.createElement("h3");
+headerContainer.appendChild(header);
+let buttonDiv = document.createElement("div");
+buttonDiv.className = "buttonContainer";
+let CButton = document.createElement("button");
+CButton.className = "degreeButton";
+CButton.textContent = "°C";
+CButton.style.backgroundColor = "#008882";
+let FButton = document.createElement("button");
+FButton.className = "degreeButton";
+FButton.textContent = `°F`;
+buttonDiv.appendChild(CButton);
+buttonDiv.appendChild(FButton);
+headerContainer.appendChild(buttonDiv);
+
+FButton.addEventListener("click", async () => {
+  CButton.style.backgroundColor = "white";
+  FButton.style.backgroundColor = "#008882";
+  buttonClicked = `F`;
+  await getTemp(lat, long, buttonClicked);
+});
+CButton.addEventListener("click", async () => {
+  FButton.style.backgroundColor = "white";
+  CButton.style.backgroundColor = "#008882";
+  buttonClicked = `C`;
+  await getTemp(lat, long, buttonClicked);
+});
+
 let search = document.querySelector(".search");
 let input = document.querySelector(".input");
 let container = document.querySelector(".container");
@@ -83,8 +113,14 @@ windDiv.appendChild(windh4);
 extraContainer.appendChild(high);
 extraContainer.appendChild(humidity);
 extraContainer.appendChild(wind);
-
-async function getCoordinates(place) {
+high.appendChild(h4Container);
+humidity.appendChild(dataDiv);
+wind.appendChild(windDiv);
+cardDiv.appendChild(headerContainer);
+cardDiv.appendChild(todayParagraph);
+cardDiv.appendChild(weatherTempContainer);
+cardDiv.appendChild(extraContainer);
+async function getCoordinates(place, buttonClicked) {
   container.appendChild(divLoader);
 
   try {
@@ -94,13 +130,12 @@ async function getCoordinates(place) {
 
     const data = await response.json();
 
-    if (!data.results) {
+    if (!data.results[0]) {
       p.textContent = "Please type a valid City or check your spelling";
       container.appendChild(p);
       lat = undefined;
       long = undefined;
     } else {
-      console.log(data.results[0]);
       lat = data.results[0].latitude;
       long = data.results[0].longitude;
       admin = data.results[0].country;
@@ -113,16 +148,22 @@ async function getCoordinates(place) {
   }
 }
 
-async function getTemp(lat, long) {
+async function getTemp(lat, long, buttonClicked) {
   divLoader.remove();
   paragraph.remove();
   if (lat && long) {
     try {
-      let response = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&daily=temperature_2m_max,temperature_2m_min&current=temperature_2m,wind_speed_10m,relative_humidity_2m,weather_code&timezone=auto&forecast_days=1`,
-      );
+      let response;
+      if (buttonClicked == `C`) {
+        response = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&daily=temperature_2m_max,temperature_2m_min&current=temperature_2m,wind_speed_10m,relative_humidity_2m,weather_code&timezone=auto&forecast_days=1`,
+        );
+      } else {
+        response = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&daily=temperature_2m_max,temperature_2m_min&current=temperature_2m,wind_speed_10m,relative_humidity_2m,weather_code&timezone=auto&forecast_days=1&temperature_unit=fahrenheit&wind_speed_unit=mph`,
+        );
+      }
       let data = await response.json();
-      console.log(data);
       if (admin) {
         header.textContent = `${countryName}, ${admin}`;
       } else {
@@ -136,8 +177,6 @@ async function getTemp(lat, long) {
       thunderstorm.remove();
       switch (data.current.weather_code) {
         case 0:
-          // sunny
-          //bg color
           temp.textContent = `${Math.round(data.current.temperature_2m)}°`;
           weatherTempContainer.appendChild(sunny);
           weatherTempContainer.appendChild(temp);
@@ -147,8 +186,6 @@ async function getTemp(lat, long) {
         case 3:
         case 45:
         case 48:
-          //bg color
-
           temp.textContent = `${Math.round(data.current.temperature_2m)}°`;
           weatherTempContainer.appendChild(cloud);
           weatherTempContainer.appendChild(temp);
@@ -162,7 +199,6 @@ async function getTemp(lat, long) {
         case 80:
         case 81:
         case 82:
-          //bg color
           temp.textContent = `${Math.round(data.current.temperature_2m)}°`;
           weatherTempContainer.appendChild(rain);
           weatherTempContainer.appendChild(temp);
@@ -177,8 +213,6 @@ async function getTemp(lat, long) {
         case 77:
         case 85:
         case 86:
-          //bg color
-
           temp.textContent = `${Math.round(data.current.temperature_2m)}°`;
           weatherTempContainer.appendChild(snow);
           weatherTempContainer.appendChild(temp);
@@ -186,8 +220,6 @@ async function getTemp(lat, long) {
         case 95:
         case 96:
         case 99:
-          //bg color
-
           temp.textContent = `${Math.round(data.current.temperature_2m)}°`;
           weatherTempContainer.appendChild(thunderstorm);
           weatherTempContainer.appendChild(temp);
@@ -200,41 +232,32 @@ async function getTemp(lat, long) {
       dataP.textContent = `${data.current.relative_humidity_2m} ${
         data.current_units.relative_humidity_2m
       }`;
-      windh4.textContent = `${data.current.wind_speed_10m} ${
+      windh4.textContent = `${Math.round(data.current.wind_speed_10m)} ${
         data.current_units.wind_speed_10m
       }`;
-      high.appendChild(h4Container);
-      humidity.appendChild(dataDiv);
-      wind.appendChild(windDiv);
-      cardDiv.appendChild(header);
-      cardDiv.appendChild(todayParagraph);
-      cardDiv.appendChild(weatherTempContainer);
-      cardDiv.appendChild(extraContainer);
+
       container.appendChild(cardDiv);
     } catch (error) {
       divLoader.remove();
-      p.textContent = "failed to load temp, please try again";
+      p.textContent = "failed to load temp, please try again" + error;
       container.appendChild(p);
     }
   }
 }
-
-search.addEventListener("click", async () => {
+async function handleSearch() {
   cardDiv.remove();
   p.remove();
   place = input.value;
   await getCoordinates(place);
-  await getTemp(lat, long);
+  await getTemp(lat, long, buttonClicked);
   input.value = "";
+}
+search.addEventListener("click", () => {
+  handleSearch();
 });
-input.addEventListener("keypress", async (event) => {
+input.addEventListener("keypress", (event) => {
   if (event.key === "Enter") {
-    cardDiv.remove();
-    p.remove();
-    place = input.value;
-    await getCoordinates(place);
-    await getTemp(lat, long);
-    input.value = "";
+    handleSearch();
   }
 });
 window.addEventListener("keydown", () => {

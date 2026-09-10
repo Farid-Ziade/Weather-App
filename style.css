@@ -306,3 +306,84 @@ input {
 .h4-container h4 {
   font-weight: 500;
 }
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.buttonContainer {
+  padding: 2px;
+  display: flex;
+  border: 1px solid grey;
+  border-radius: 5px;
+  width: 4em;
+}
+.degreeButton {
+  width: 100%;
+  padding: 1px;
+  background-color: white;
+  border: 0 none white;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    max-width: 500px;
+    padding: 0 1em;
+  }
+  .input-container {
+    display: flex;
+    width: 100%;
+    gap: 0.75em;
+  }
+  input {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    height: auto;
+    min-height: 100vh;
+    padding: 1.5em 1em;
+  }
+  h1 {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 1em;
+  }
+  .container {
+    width: 100%;
+  }
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75em;
+  }
+  input {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 0;
+  }
+  .search {
+    width: 100%;
+  }
+  .headerContainer {
+    flex-wrap: wrap;
+    gap: 0.5em;
+  }
+  .cardDiv {
+    padding: 1.25em;
+  }
+  .high,
+  .humidity,
+  .wind {
+    padding-left: 0.5em;
+  }
+}
